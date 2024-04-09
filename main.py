@@ -88,7 +88,8 @@ class FiveInARowGame:
                 self.current_player = 1 if self.current_player == 0 else 0
 
             if self.bot:
-                row, col = bot.play_random(self.board)
+                row, col = bot.play_and_learn(self.board)
+                print(row, col)
                 self.board[row][col] = self.current_player
                 self.draw_board()
                 if self.check_winner(row, col):

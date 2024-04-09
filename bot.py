@@ -12,19 +12,23 @@ def play_random(board):
 
 
 def play_and_learn(board):
-    non_nan_indices = np.argwhere(np.invert(np.isnan(board)))
-    nan_indices = np.argwhere(np.isnan(board))
-    indices = np.arange(nan_indices.shape[1])
+    b = []
+    for i in range(board.shape[0]):
+        for j in range(board.shape[1]):
+            b.append([i,j])
+    indices = np.array(b)
 
+    # Here is where the memory should be instead of a random each time
     prob = np.random.rand(*board.shape)
 
-    for row, col in non_nan_indices:
-        print(prob)
-        print(row, col)
-        prob[row][col] = 0
+    prob[~np.isnan(board)] = 0
 
     prob /= np.sum(prob)
-    row, col = nan_indices[np.random.choice(indices, p=prob.flatten())]
+    print(indices)
+    print()
+
+    
+    row, col = indices[np.random.choice(range(board.size), p=prob.flatten())]
 
     print(row, col)
     return row, col
