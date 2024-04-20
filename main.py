@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import bot
+import brain
 import numpy as np
 
 
@@ -9,9 +10,13 @@ class FiveInARowGame:
         self.root = root
         self.size = size
         self.bot = bot
+        
         self.board = np.full([size, size], np.nan)
         self.current_player = 0
         self.dict = {0: "X", 1: "O"}
+
+        self.neural_network = brain.NeuralNetwork(size*size, [2,2], size*size)
+        
 
         self.canvas = tk.Canvas(root, width=400, height=400)
         self.canvas.pack()
@@ -88,16 +93,24 @@ class FiveInARowGame:
                 self.current_player = 1 if self.current_player == 0 else 0
 
             if self.bot:
-                row, col = bot.play_and_learn(self.board)
+                row, col = bot.play_but_with_brain(self.board, self.neural_network)
                 print(row, col)
-                self.board[row][col] = self.current_player
-                self.draw_board()
+                print(self.board[row][col])
+                if not np.isnan(self.board[row][col]):
+                    print("You may cheat, because the bot tried to cheat!!")
+                    self.current_player = 1
+                    print(self.current_player)
+                    
+                else:
+                    self.board[row][col] = self.current_player
+                    self.draw_board()
                 if self.check_winner(row, col):
                     messagebox.showinfo(
                         "Game Over", f"Player {self.dict[self.current_player]} wins!"
                     )
                     self.root.quit()
                 else:
+                    print(self.current_player)
                     self.current_player = 1 if self.current_player == 0 else 0
 
 

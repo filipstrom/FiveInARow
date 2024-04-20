@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import brain
 
 
 def play_random(board):
@@ -10,8 +11,50 @@ def play_random(board):
 
     return row, col
 
+def see(board):
+    vision = []
+    for row in board:
+        for square in row:
+            print(square)
+            res = 0
+            if square == 1:
+                res = 1
+            if square == 0:
+                res = -1
+            
+            vision.append(res)
 
-def play_and_learn(board):
+
+    print(vision)
+    return vision
+
+def play_but_with_brain(board, neural_network):
+    vision = see(board)
+
+    b = []
+    for i in range(board.shape[0]):
+        for j in range(board.shape[1]):
+            b.append([i,j])
+    indices = np.array(b)
+
+    
+    prediction = neural_network.predict(vision)
+    
+
+
+    prediction /= np.sum(prediction)
+    print(indices)
+    print()
+
+    
+    row, col = indices[np.random.choice(range(board.size), p=prediction.flatten())]
+
+    print(row, col)
+    return row, col
+
+
+
+def play_random_but_with_prob(board):
     b = []
     for i in range(board.shape[0]):
         for j in range(board.shape[1]):
